@@ -1,0 +1,23 @@
+# Entornos y variables de entorno (claves secretas)
+.env
+.env*.local
+
+# Entornos virtuales de Python
+.venv
+.venv/
+venv/
+env/
+
+# Archivos temporales de Python
+__pycache__/
+__pycache__
+*.pyc
+*.py[cod]
+
+# Despliegues / hosting
+.vercel
+
+# Salidas generadas / certificados (no subir al repositorio)
+certificados_generados/
+output/
+dist/
