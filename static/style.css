@@ -1,0 +1,16 @@
+/* Salón Academia Horizonte: azul marino y dorado */
+body { font-family: Arial, sans-serif; margin: 0; background: #f4f1e6; color: #1c1c1c; }
+header { background: #0f2a44; color: #d4af37; padding: 20px; text-align: center; }
+header p { color: #ffffff; margin: 4px 0 0; }
+.contadores { display: flex; gap: 12px; justify-content: center; margin: 16px; }
+.tarjeta { border-radius: 8px; padding: 12px 24px; text-align: center; color: #fff; }
+.tarjeta strong { display: block; font-size: 28px; }
+.tarjeta.verde { background: #1e7d32; } .tarjeta.azul { background: #1565c0; } .tarjeta.rojo { background: #b71c1c; }
+.filtro { text-align: center; margin: 12px; }
+.filtro a { margin: 0 6px; color: #0f2a44; }
+.filtro a.activo { font-weight: bold; color: #8a6d00; }
+table { border-collapse: collapse; width: 95%; margin: 0 auto 24px; background: #fff; }
+th { background: #0f2a44; color: #d4af37; padding: 8px; }
+td { border: 1px solid #ccc; padding: 6px 8px; }
+tr.verde { background: #e6f4ea; } tr.azul { background: #e3f2fd; } tr.rojo { background: #fdecea; }
+.inconsistencias { width: 95%; margin: 0 auto 32px; background: #fff; border-left: 6px solid #d4af37; padding: 12px 16px; }

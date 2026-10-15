@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Academia Horizonte — Certificados</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <h1>Academia Horizonte</h1>
+  <p>Emisión de certificados por cohorte</p>
+</header>
+
+<section class="contadores">
+  <div class="tarjeta verde"><strong>{{ contadores["Aprobación"] }}</strong><span>Aprobación</span></div>
+  <div class="tarjeta azul"><strong>{{ contadores["Participación"] }}</strong><span>Participación</span></div>
+  <div class="tarjeta rojo"><strong>{{ contadores["Sin certificado"] }}</strong><span>Sin certificado</span></div>
+</section>
+
+<nav class="filtro">
+  <span>Filtrar por programa:</span>
+  <a href="/?programa=Todos" class="{% if filtro == 'Todos' %}activo{% endif %}">Todos</a>
+  {% for p in programas %}
+  <a href="/?programa={{ p }}" class="{% if filtro == p %}activo{% endif %}">{{ p }}</a>
+  {% endfor %}
+</nav>
+
+<table>
+  <thead>
+    <tr><th>Nombre</th><th>Programa</th><th>Módulos</th><th>Promedio</th><th>Asistencia</th><th>Certificado</th></tr>
+  </thead>
+  <tbody>
+    {% for r in resultados %}
+    <tr class="{% if r.tipo == 'Aprobación' %}verde{% elif r.tipo == 'Participación' %}azul{% else %}rojo{% endif %}">
+      <td>{{ r.nombre }}</td><td>{{ r.programa }}</td><td>{{ r.modulos }}</td>
+      <td>{{ "%.2f"|format(r.promedio) }}</td><td>{{ "%.2f"|format(r.asistencia) }}</td><td>{{ r.tipo }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<section class="inconsistencias">
+  <h2>Inconsistencias ({{ inconsistencias|length }})</h2>
+  <ul>
+    {% for i in inconsistencias %}
+    <li><strong>{{ i.caso }}:</strong> {{ i.detalle }}</li>
+    {% endfor %}
+  </ul>
+</section>
+</body>
+</html>

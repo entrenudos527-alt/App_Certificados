@@ -1,27 +1,42 @@
 # AGENTS.md
 
-Greenfield repo — no app code, build, test, or lint config yet. Only data inputs exist.
+Academia Horizonte: automatizar emisión de certificados por cohorte (hoy manual en Excel/Word) como aplicación web. Explica en español sencillo lo que vayas haciendo.
 
-## Sources of truth (read-only)
+## Arquitectura (3 piezas)
 
-- `Insumos/Maestro_Estudiantes.xlsx` — sheet `Estudiantes`, range `A1:E25` (header + 24 rows).
-  Columns: `Identificacion | Nombre_Completo | Correo | Programa | Cohorte`.
-  Single program/cohort observed: `Técnico en IA Aplicada`, `2026-A`. Sample emails `@ejemplo.cr` (fictional).
-- `Insumos/Registro_Evaluaciones.xlsx` — sheet `Evaluaciones`, range `A1:F89` (header + 88 rows).
-  Columns: `Identificacion | Programa | Modulo | Nota | Asistencia_Pct | Fecha_Cierre`.
-  Modules observed: `Módulo 1`–`Módulo 4`. `Nota`/`Asistencia_Pct` numeric; `Fecha_Cierre` ISO date string. Cells use `inlineStr`, no `sharedStrings.xml`.
-- Join key across both files is `Identificacion` (string; preserve leading zeros, do not cast to int).
-- No eligibility / passing-grade / attendance rules are defined in the repo — do not invent them. Ask or leave undecided.
+- Bodega: `Insumos/` (Excel). Solo lectura, NO modificar.
+- Cocina (backend): Python + Flask en `app.py`. Toda la lógica va aquí, NUNCA en la interfaz.
+- Salón (frontend): HTML servido por Flask. Solo muestra; no calcula ni decide.
 
-Do not edit files under `Insumos/`; treat as immutable inputs.
+## Entradas (verificado del XML)
 
-## Environment quirks
+- `Insumos/Maestro_Estudiantes.xlsx` — hoja `Estudiantes`, `A1:E25` (header + 24 rows).
+  `Identificacion | Nombre_Completo | Correo | Programa | Cohorte`. Programas: `Técnico en IA Aplicada` (16) + `Excel Avanzado para Negocios` (8). Cohorte única: `2026-A`. Emails `@ejemplo.cr` (ficticios).
+- `Insumos/Registro_Evaluaciones.xlsx` — hoja `Evaluaciones`, `A1:F89` (header + 88 rows).
+  `Identificacion | Programa | Modulo | Nota | Asistencia_Pct | Fecha_Cierre`. `Módulo 1`–`Módulo 4` (M4 con solo 16 filas). `Nota`/`Asistencia_Pct` numéricos; `Fecha_Cierre` string fecha ISO. Celdas con `inlineStr`, sin `sharedStrings.xml`.
+- Clave de unión: `Identificacion` como string, sin convertir a int (preserva ceros iniciales).
 
-- OS is Windows, default shell is PowerShell. The workspace path contains spaces (`APP Certificados`): always quote paths.
-- No Python, Node, or package manager was available at last check (`python`, `py`, `node`, `npm` all missing). Verify toolchain with `Get-Command` before assuming one; do not add speculative run/test commands here.
-- `.xlsx` parsing without deps: files are ZIPs readable via `System.IO.Compression.ZipFile` + `xl/worksheets/sheet*.xml` + `xl/workbook.xml`.
+## Reglas de negocio
 
-## When scaffolding the app
+- `Promedio = suma de Notas / cantidad de módulos cursados`. `Asistencia = promedio de Asistencia_Pct`.
+- Agrupar por `Identificacion + Programa`. Un certificado por estudiante y programa.
+- Aprobación si `Promedio >= 70` y `Asistencia >= 80`. Participación si `Promedio < 70` y `Asistencia >= 80`. Sin certificado si `Asistencia < 80`. Límites inclusivos.
 
-- Keep this file updated: record the chosen stack, exact dev/test/lint commands, and entrypoints once they exist.
-- Keep generated certificates / outputs out of `Insumos/` and out of git.
+## Estilo
+
+- Código simple y comentado en español, señalando los ladrillos: variables, tipos, condicionales, bucles y funciones.
+- Diseño web en azul marino y dorado.
+
+## Decisiones técnicas (verificado con `pip list`)
+
+- Excel: `openpyxl` (ya instalado 3.1.5). ID siempre como string. `pandas` descartado para la v1 (esconde la lógica); stdlib `zipfile` solo como plan B.
+- Web: `Flask` (ya instalado 3.1.3) con `render_template`. PDF futuro con `fpdf2` (ya instalado 2.8.9).
+- Estructura: `app.py`, `requirements.txt`, `templates/base.html`, `templates/index.html`, `templates/certificado.html`, `static/style.css`. Lógica solo en `app.py`.
+- Plan por etapas en `PLAN.md`. Resultado esperado actual: 19 Aprobación + 3 Participación = 22 certificados.
+
+## Entorno
+
+- Windows + PowerShell. La ruta contiene espacios (`APP Certificados`): siempre entrecomilla rutas.
+- `python` es Python 3.12.10 (verificado). `py`, `node`, `npm` no existen — verifica con `Get-Command`.
+- Sin dependencias de Excel asumidas: los `.xlsx` son ZIPs legibles con stdlib (`zipfile` + `xl/worksheets/sheet1.xml` + `xl/workbook.xml`).
+- `.gitignore` ya excluye `.env`, `.venv/`, `__pycache__/` y salidas `certificados_generados/`, `output/`, `dist/`. Los certificados generados van fuera de `Insumos/` y fuera de git.
