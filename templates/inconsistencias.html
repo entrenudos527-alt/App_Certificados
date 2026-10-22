@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Academia Horizonte — Inconsistencias</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <h1>Academia Horizonte</h1>
+  <p>Inconsistencias detectadas en la Bodega</p>
+  <div class="usuario">
+    <span class="correo">{{ correo }}</span>
+    <span class="insignia insignia-admin">{{ rol|capitalize }}</span>
+    <a href="{{ url_for('logout') }}">Salir</a>
+  </div>
+</header>
+
+<main class="inconsistencias">
+  <h2>Inconsistencias ({{ inconsistencias|length }})</h2>
+  <ul>
+    {% for i in inconsistencias %}
+    <li><strong>{{ i.caso }}:</strong> {{ i.detalle }}</li>
+    {% endfor %}
+  </ul>
+  <p><a class="boton" href="{{ url_for('index') }}">Volver al tablero</a></p>
+</main>
+</body>
+</html>

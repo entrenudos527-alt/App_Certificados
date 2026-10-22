@@ -9,7 +9,60 @@
 <header>
   <h1>Academia Horizonte</h1>
   <p>Emisión de certificados por cohorte</p>
+  <div class="usuario">
+    <span class="correo">{{ correo }}</span>
+    <span class="insignia {% if es_admin %}insignia-admin{% else %}insignia-normal{% endif %}">
+      {{ (rol or "invitado")|capitalize }}
+    </span>
+    <a href="{{ url_for('logout') }}">Salir</a>
+  </div>
 </header>
+
+{% if error %}
+<div class="aviso-rojo" role="alert">{{ error }}</div>
+{% endif %}
+
+{% if aviso %}
+<div class="aviso-verde" role="status">{{ aviso }}</div>
+{% endif %}
+
+{% if es_admin %}
+<section class="panel-admin">
+  <h2>Panel de administrador</h2>
+  <p class="origen">
+    Origen de los datos en pantalla: <strong>{{ origen }}</strong>
+  </p>
+
+  <form action="{{ url_for('cargar') }}" method="post"
+        enctype="multipart/form-data">
+    <div class="campos">
+      <label>Maestro de estudiantes
+        <input type="file" name="maestro" accept=".xlsx" required>
+      </label>
+      <label>Registro de evaluaciones
+        <input type="file" name="evaluaciones" accept=".xlsx" required>
+      </label>
+    </div>
+    <p class="ayuda">
+      Se leen en memoria y no se guardan en el servidor. Máximo 4 MB en total.
+    </p>
+    <div class="botones">
+      <button class="boton" type="submit" name="accion" value="pantalla">
+        Procesar y ver en pantalla
+      </button>
+      <button class="boton" type="submit" name="accion" value="excel">
+        Procesar y descargar Excel
+      </button>
+    </div>
+  </form>
+
+  <p class="ayuda">
+    <a href="{{ url_for('resultados_excel') }}">
+      Descargar resultados de los datos de fábrica (Excel)
+    </a>
+  </p>
+</section>
+{% endif %}
 
 <section class="contadores">
   <div class="tarjeta verde"><strong>{{ contadores["Aprobación"] }}</strong><span>Aprobación</span></div>
@@ -53,6 +106,7 @@
   </tbody>
 </table>
 
+{% if es_admin %}
 <section class="inconsistencias">
   <h2>Inconsistencias ({{ inconsistencias|length }})</h2>
   <ul>
@@ -60,6 +114,8 @@
     <li><strong>{{ i.caso }}:</strong> {{ i.detalle }}</li>
     {% endfor %}
   </ul>
+  <p class="ayuda"><a href="{{ url_for('inconsistencias') }}">Ver sección completa</a></p>
 </section>
+{% endif %}
 </body>
 </html>

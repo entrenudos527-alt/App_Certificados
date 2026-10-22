@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Academia Horizonte — Sin permiso</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <h1>Academia Horizonte</h1>
+  <p>Emisión de certificados por cohorte</p>
+  <div class="usuario">
+    <span class="correo">{{ correo }}</span>
+    <span class="insignia insignia-normal">{{ rol|capitalize }}</span>
+    <a href="{{ url_for('logout') }}">Salir</a>
+  </div>
+</header>
+
+<main class="aviso">
+  <h1>Esta sección es solo para administradores</h1>
+  <p>
+    La cuenta con la que estás dentro no tiene permiso para ver las
+    inconsistencias de los estudiantes. Si crees que es un error, pide a la
+    Dirección Académica que revise tu rol.
+  </p>
+
+  <h2>Tu sesión</h2>
+  <dl>
+    <dt>Correo</dt>
+    <dd>{{ correo }}</dd>
+    <dt>Rol</dt>
+    <dd>{{ rol|capitalize }}</dd>
+  </dl>
+
+  <p>
+    <a class="boton" href="{{ url_for('index') }}">Volver al tablero</a>
+    <a class="boton boton-claro" href="{{ url_for('logout') }}">Salir</a>
+  </p>
+</main>
+</body>
+</html>

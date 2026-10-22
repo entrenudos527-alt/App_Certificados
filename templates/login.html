@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Academia Horizonte — Entrar</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <h1>Academia Horizonte</h1>
+  <p>Emisión de certificados por cohorte</p>
+</header>
+
+<main class="login-caja">
+  <h2>Entrar</h2>
+
+  {% if error %}
+  <div class="error-login" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" action="{{ url_for('login') }}">
+    <label>Correo
+      <input type="email" name="correo" value="{{ correo }}"
+             autocomplete="username" required autofocus>
+    </label>
+    <label>Contraseña
+      <input type="password" name="clave" autocomplete="current-password"
+             required>
+    </label>
+    <button class="boton" type="submit">Entrar</button>
+  </form>
+
+  <p class="ayuda">
+    El acceso lo configura la Dirección Académica en el servidor.
+  </p>
+</main>
+</body>
+</html>
