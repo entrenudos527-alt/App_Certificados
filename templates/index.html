@@ -25,6 +25,15 @@
   {% endfor %}
 </nav>
 
+{% if total_emitibles > 0 %}
+<section class="acciones">
+  <a class="boton" href="{{ url_for('certificados_zip', programa=filtro) }}">
+    Descargar {{ total_emitibles }} certificados (ZIP)
+  </a>
+  <p class="ayuda">Cada archivo es un PDF. El estudiante sin certificado no se incluye.</p>
+</section>
+{% endif %}
+
 <table>
   <thead>
     <tr><th>Nombre</th><th>Programa</th><th>Módulos</th><th>Promedio</th><th>Asistencia</th><th>Certificado</th></tr>
@@ -33,7 +42,12 @@
     {% for r in resultados %}
     <tr class="{% if r.tipo == 'Aprobación' %}verde{% elif r.tipo == 'Participación' %}azul{% else %}rojo{% endif %}">
       <td>{{ r.nombre }}</td><td>{{ r.programa }}</td><td>{{ r.modulos }}</td>
-      <td>{{ "%.2f"|format(r.promedio) }}</td><td>{{ "%.2f"|format(r.asistencia) }}</td><td>{{ r.tipo }}</td>
+      <td>{{ "%.2f"|format(r.promedio) }}</td><td>{{ "%.2f"|format(r.asistencia) }}</td>
+      <td>{{ r.tipo }}
+        {% if r.tipo != 'Sin certificado' %}
+        · <a href="{{ url_for('certificado', identificacion=r.identificacion, programa=r.programa) }}">Descargar PDF</a>
+        {% endif %}
+      </td>
     </tr>
     {% endfor %}
   </tbody>

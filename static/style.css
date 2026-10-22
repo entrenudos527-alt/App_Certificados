@@ -9,8 +9,14 @@ header p { color: #ffffff; margin: 4px 0 0; }
 .filtro { text-align: center; margin: 12px; }
 .filtro a { margin: 0 6px; color: #0f2a44; }
 .filtro a.activo { font-weight: bold; color: #8a6d00; }
+.acciones { text-align: center; margin: 4px 0 18px; }
+.boton { display: inline-block; background: #0f2a44; color: #d4af37; border: 2px solid #d4af37;
+         border-radius: 6px; padding: 12px 22px; font-weight: bold; text-decoration: none; }
+.boton:hover { background: #1b3f63; }
+.ayuda { color: #555; font-size: 13px; margin: 8px 0 0; }
 table { border-collapse: collapse; width: 95%; margin: 0 auto 24px; background: #fff; }
 th { background: #0f2a44; color: #d4af37; padding: 8px; }
 td { border: 1px solid #ccc; padding: 6px 8px; }
+td a { color: #8a6d00; font-weight: bold; }
 tr.verde { background: #e6f4ea; } tr.azul { background: #e3f2fd; } tr.rojo { background: #fdecea; }
 .inconsistencias { width: 95%; margin: 0 auto 32px; background: #fff; border-left: 6px solid #d4af37; padding: 12px 16px; }
