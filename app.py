@@ -60,12 +60,21 @@ AVISO_TEMPORAL = ("Resultados calculados con los archivos que acabas de subir. "
 
 
 
-# FUNCIÓN: lee del entorno las cuentas permitidas (sin escribir claves en el código).
+# USUARIOS DE PRUEBA: permiten entrar sin configurar nada en Vercel.
+# Se usan SOLO cuando no hay ninguna credencial en el entorno. En cuanto exista
+# ADMIN_CORREO/ADMIN_CLAVE (o USUARIO_*), estos usuarios dejan de funcionar.
+USUARIOS_DEMO = {
+    "admin@academia.cr": {"clave": "admin123", "rol": "admin"},
+    "usuario@academia.cr": {"clave": "usuario123", "rol": "usuario"},
+}
+
+
+# FUNCIÓN: lee del entorno las cuentas reales (sin escribir claves en el código).
 # Se leen en cada petición para que un cambio en Vercel no exija tocar el archivo.
 # Formato:
 #   ADMIN_CORREO / ADMIN_CLAVE   (o ADMIN_CLAVE_HASH)   -> rol "admin"
 #   USUARIO_CORREO / USUARIO_CLAVE (o USUARIO_CLAVE_HASH) -> rol "usuario"
-def usuarios_permitidos():
+def usuarios_de_entorno():
     usuarios = {}  # VARIABLE dict: correo -> datos de la cuenta
     for prefijo, rol in (("ADMIN", "admin"), ("USUARIO", "usuario")):  # BUCLE
         correo = os.environ.get(f"{prefijo}_CORREO", "").strip().lower()
@@ -75,6 +84,25 @@ def usuarios_permitidos():
             usuarios[correo] = {"clave": clave, "clave_hash": clave_hash,
                                 "rol": rol}
     return usuarios
+
+
+# FUNCIÓN: cuentas que puede usar el login.
+# Si hay cuentas en el entorno, mandan ellas; si no, se usan las de prueba.
+def usuarios_permitidos():
+    configurados = usuarios_de_entorno()
+    if configurados:  # CONDICIONAL: ya hay credenciales reales
+        return configurados
+    # MODO DEMOSTRACIÓN: nadie configuró credenciales todavía
+    return {correo: {"clave": datos["clave"], "clave_hash": "",
+                     "rol": datos["rol"]}
+            for correo, datos in USUARIOS_DEMO.items()}
+
+
+# FUNCIÓN: avisa si se están usando las cuentas de prueba
+def modo_demo():
+    return not usuarios_de_entorno()  # CONDICIONAL
+
+
 
 
 # FUNCIÓN: compara la clave escrita con la guardada.
@@ -455,6 +483,7 @@ def login():
 
     error = None  # VARIABLE string: mensaje rojo si algo falla
     correo = ""  # VARIABLE string: lo que la persona escribió
+    demo = modo_demo()  # CONDICIONAL: ¿se están usando las cuentas de prueba?
 
     if request.method == "POST":  # CONDICIONAL: envió el formulario
         correo = request.form.get("correo", "").strip().lower()
@@ -468,7 +497,9 @@ def login():
         error = ("Correo o contraseña incorrectos. Revisa los datos e "
                  "inténtalo de nuevo.")
 
-    return render_template("login.html", error=error, correo=correo)
+    return render_template("login.html", error=error, correo=correo,
+                           demo=demo,
+                           usuarios_demo=USUARIOS_DEMO if demo else {})
 
 
 # Ruta principal: prepara los datos y los sirve al Salón

@@ -33,6 +33,28 @@
   <p class="ayuda">
     El acceso lo configura la Dirección Académica en el servidor.
   </p>
+
+  {% if demo %}
+  <div class="demo-usuarios">
+    <h3>Usuarios de prueba</h3>
+    <p class="ayuda">
+      La app todavía no tiene credenciales configuradas, así que puedes entrar
+      con estas cuentas:
+    </p>
+    <ul>
+      {% for correo_demo, datos in usuarios_demo.items() %}
+      <li>
+        <strong>{{ "Administrador" if datos.rol == "admin" else "Usuario normal" }}:</strong>
+        {{ correo_demo }} · clave <code>{{ datos.clave }}</code>
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="ayuda">
+      Son solo para pruebas. En cuanto configures <code>ADMIN_CORREO</code> y
+      <code>ADMIN_CLAVE</code> en Vercel, estas cuentas dejan de funcionar.
+    </p>
+  </div>
+  {% endif %}
 </main>
 </body>
 </html>

@@ -78,3 +78,12 @@ tr.verde { background: #e6f4ea; } tr.azul { background: #e3f2fd; } tr.rojo { bac
 .error-login { background: #fdecea; border-left: 6px solid #b71c1c;
                color: #7f1d1d; padding: 10px 12px; border-radius: 4px;
                font-size: 13px; margin-bottom: 14px; }
+
+/* --- Recuadro de usuarios de prueba (solo en modo demostración) --- */
+.demo-usuarios { margin-top: 22px; padding-top: 16px; border-top: 1px dashed #d4af37; }
+.demo-usuarios h3 { color: #0f2a44; font-size: 14px; margin: 0 0 6px; }
+.demo-usuarios ul { margin: 8px 0; padding-left: 18px; font-size: 13px; }
+.demo-usuarios li { margin-bottom: 4px; }
+.demo-usuarios code { background: #f4f1e6; color: #0f2a44; padding: 1px 5px;
+                      border-radius: 3px; font-size: 12px; }
+.demo-usuarios .ayuda { font-size: 12px; }
